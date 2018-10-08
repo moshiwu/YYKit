@@ -260,7 +260,7 @@ static yy_net_interface_counter yy_get_net_interface_counter() {
             @"iPod5,1" : @"iPod touch 5",
             @"iPod7,1" : @"iPod touch 6",
             
-            @"iPhone1,1" : @"iPhone 1G",
+            @"iPhone1,1" : @"iPhone 2G",
             @"iPhone1,2" : @"iPhone 3G",
             @"iPhone2,1" : @"iPhone 3GS",
             @"iPhone3,1" : @"iPhone 4 (GSM)",
