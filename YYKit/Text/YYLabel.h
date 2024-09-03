@@ -96,6 +96,12 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic) NSTextAlignment textAlignment;
 
+/// 在使用YYTextLayout+文本右对齐的情况下，boundingSize会比实际所需显示的范围大，默认绘制是从0.0开始，所以文本会偏右；如果Label的width较小，文本会被截断显示不全
+/// 这个属性可以设置为YES，让YYLabel在绘制时，从右边开始绘制，这样文本就不会被截断显示不全了
+/// YYTextLayout计算的：       [   （空白）                                文本]          （假如宽度100）
+/// 实际显示的：                      [         ]              (假如宽度30）
+@property (nonatomic, assign) BOOL fixRTLAlignment;
+
 /**
  The text vertical aligmnent in container. Default is YYTextVerticalAlignmentCenter.
  */

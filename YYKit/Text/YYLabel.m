@@ -1067,6 +1067,7 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
 - (YYAsyncLayerDisplayTask *)newAsyncDisplayTask {
     
     // capture current context
+    BOOL fixRTLAlignment = self.fixRTLAlignment;
     BOOL contentsNeedFade = _state.contentsNeedFade;
     NSAttributedString *text = _innerText;
     YYTextContainer *container = _innerContainer;
@@ -1138,6 +1139,11 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
                 point.y = (size.height - boundingSize.height);
             }
         }
+        
+        if (fixRTLAlignment) {
+            point.x = 0 - (boundingSize.width - size.width);
+        }
+        
         point = CGPointPixelRound(point);
         [drawLayout drawInContext:context size:size point:point view:nil layer:nil debug:debug cancel:isCancelled];
     };
