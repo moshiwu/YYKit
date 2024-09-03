@@ -44,6 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, strong, readonly) YYImageCache      *cache;    ///< The image cache.
 @property (nonatomic, strong, readonly)           NSString          *cacheKey; ///< The image cache key.
 @property (nonatomic, readonly)                   YYWebImageOptions options;   ///< The operation's option.
+@property (nonatomic, assign)                     int32_t           maxPixelSize;  ///< The max width or height pixel size for downsampling.
 
 /**
  Whether the URL connection should consult the credential storage for authenticating 

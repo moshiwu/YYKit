@@ -50,12 +50,30 @@ const NSTimeInterval _YYWebImageProgressiveFadeTime = 0.4;
                            progress:(YYWebImageProgressBlock)progress
                           transform:(YYWebImageTransformBlock)transform
                          completion:(YYWebImageCompletionBlock)completion {
+    return [self setOperationWithSentinel:sentinel
+                                      url:imageURL
+                                  options:options
+                             maxPixelSize:0
+                                  manager:manager
+                                 progress:progress
+                                transform:transform
+                               completion:completion];
+}
+
+- (int32_t)setOperationWithSentinel:(int32_t)sentinel
+                                url:(nullable NSURL *)imageURL
+                            options:(YYWebImageOptions)options
+                       maxPixelSize:(int32_t)maxPixelSize
+                            manager:(YYWebImageManager *)manager
+                           progress:(nullable YYWebImageProgressBlock)progress
+                          transform:(nullable YYWebImageTransformBlock)transform
+                         completion:(nullable YYWebImageCompletionBlock)completion {
     if (sentinel != _sentinel) {
         if (completion) completion(nil, imageURL, YYWebImageFromNone, YYWebImageStageCancelled, nil);
         return _sentinel;
     }
     
-    NSOperation *operation = [manager requestImageWithURL:imageURL options:options progress:progress transform:transform completion:completion];
+    NSOperation *operation = [manager requestImageWithURL:imageURL options:options maxPixelSize:maxPixelSize progress:progress transform:transform completion:completion];
     if (!operation && completion) {
         NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"YYWebImageOperation create failed." };
         completion(nil, imageURL, YYWebImageFromNone, YYWebImageStageFinished, [NSError errorWithDomain:@"com.ibireme.yykit.webimage" code:-1 userInfo:userInfo]);

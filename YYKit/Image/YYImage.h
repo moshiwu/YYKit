@@ -47,6 +47,37 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable YYImage *)imageWithData:(NSData *)data scale:(CGFloat)scale;
 
 /**
+ @return downsampleFactor the downsample factor, default is `1.2`.
+ */
++ (CGFloat)downsampleFactor;
+
+/**
+ If an image is need to downsample, will downsample to pixel size: maxPixelSize * downsampleFactor.
+ 
+ @param downsampleFactor the downsample factor, real pixel size = maxPixelSize * factor. Default is `1.2`. Set downsampleFactor to `0` could disable the downsample feature.
+ */
++ (void)setDownsampleFactor:(CGFloat)downsampleFactor;
+
++ (CGSize)imagePixelSizeFromData:(NSData *)data;
+
+/**
+ Just affective for YYImageTypeJPEG and YYImageTypePNG.
+ If downsample failed, will return data passed in.
+ */
++ (NSData *)downsampleImageWithData:(NSData*)data maxPixelSize:(int32_t)maxPixelSize;
+
+/**
+ If the image is no need to display, set 'decodeForDisplay' to NO.
+ */
+- (instancetype)initWithData:(NSData *)data scale:(CGFloat)scale decodeForDisplay:(BOOL)decodeForDisplay;
+
+/**
+ If the image is need to downsample, set 'maxPixelSize' to > 0.
+ */
+- (instancetype)initWithData:(NSData *)data scale:(CGFloat)scale decodeForDisplay:(BOOL)decodeForDisplay maxPixelSize:(int32_t)maxPixelSize;
+
+
+/**
  If the image is created from data or file, then the value indicates the data type.
  */
 @property (nonatomic, readonly) YYImageType animatedImageType;

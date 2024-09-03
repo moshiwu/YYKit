@@ -54,7 +54,15 @@
                                     progress:(YYWebImageProgressBlock)progress
                                    transform:(YYWebImageTransformBlock)transform
                                   completion:(YYWebImageCompletionBlock)completion {
-    
+    return [self requestImageWithURL:url options:options maxPixelSize:0 progress:progress transform:transform completion:completion];
+}
+
+- (YYWebImageOperation *)requestImageWithURL:(NSURL *)url
+                                     options:(YYWebImageOptions)options
+                                maxPixelSize:(int32_t)maxPixelSize
+                                    progress:(nullable YYWebImageProgressBlock)progress
+                                   transform:(nullable YYWebImageTransformBlock)transform
+                                  completion:(nullable YYWebImageCompletionBlock)completion {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.timeoutInterval = _timeout;
     request.HTTPShouldHandleCookies = (options & YYWebImageOptionHandleCookies) != 0;
@@ -73,6 +81,9 @@
 
     if (_username && _password) {
         operation.credential = [NSURLCredential credentialWithUser:_username password:_password persistence:NSURLCredentialPersistenceForSession];
+    }
+    if ((options & YYWebImageOptionShouldDownsample) && maxPixelSize > 0) {
+        operation.maxPixelSize = maxPixelSize;
     }
     if (operation) {
         NSOperationQueue *queue = _queue;

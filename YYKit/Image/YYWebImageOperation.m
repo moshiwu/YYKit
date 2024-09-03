@@ -583,10 +583,22 @@ static void URLInBlackListAdd(NSURL *url) {
                 
                 BOOL shouldDecode = (self.options & YYWebImageOptionIgnoreImageDecoding) == 0;
                 BOOL allowAnimation = (self.options & YYWebImageOptionIgnoreAnimatedImage) == 0;
+                BOOL shouldDownsample = (self.options & YYWebImageOptionShouldDownsample) && self.maxPixelSize > 0;
+                if (shouldDownsample) {
+                    CGSize pixelSize = [YYImage imagePixelSizeFromData:self.data];
+                    int32_t maxPixelWidth = MAX(pixelSize.width, pixelSize.height);
+                    if (maxPixelWidth > self.maxPixelSize) {
+                        NSData *compressData = [YYImage downsampleImageWithData:self.data maxPixelSize:self.maxPixelSize];
+                        if (compressData) {
+                            [self setValue:compressData forKey:@"_data"];
+                        }
+                    }
+                }
+
                 UIImage *image;
                 BOOL hasAnimation = NO;
                 if (allowAnimation) {
-                    image = [[YYImage alloc] initWithData:self.data scale:[UIScreen mainScreen].scale];
+                    image = [[YYImage alloc] initWithData:self.data scale:[UIScreen mainScreen].scale decodeForDisplay:shouldDecode];
                     if (shouldDecode) image = [image imageByDecoded];
                     if ([((YYImage *)image) animatedImageFrameCount] > 1) {
                         hasAnimation = YES;

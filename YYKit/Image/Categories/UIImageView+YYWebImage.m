@@ -54,6 +54,17 @@ static int _YYWebImageHighlightedSetterKey;
                completion:nil];
 }
 
+- (void)setImageWithURL:(nullable NSURL *)imageURL options:(YYWebImageOptions)options maxPixelSize:(int32_t)maxPixelSize {
+    [self setImageWithURL:imageURL
+              placeholder:nil
+                  options:options
+             maxPixelSize:maxPixelSize
+                  manager:nil
+                 progress:nil
+                transform:nil
+               completion:nil];
+}
+
 - (void)setImageWithURL:(NSURL *)imageURL options:(YYWebImageOptions)options {
     [self setImageWithURL:imageURL
               placeholder:nil
@@ -99,6 +110,24 @@ static int _YYWebImageHighlightedSetterKey;
                progress:(YYWebImageProgressBlock)progress
               transform:(YYWebImageTransformBlock)transform
              completion:(YYWebImageCompletionBlock)completion {
+    [self setImageWithURL:imageURL
+              placeholder:placeholder
+                  options:options
+             maxPixelSize:0
+                  manager:nil
+                 progress:progress
+                transform:transform
+               completion:completion];
+}
+
+- (void)setImageWithURL:(nullable NSURL *)imageURL
+            placeholder:(nullable UIImage *)placeholder
+                options:(YYWebImageOptions)options
+           maxPixelSize:(int32_t)maxPixelSize
+                manager:(nullable YYWebImageManager *)manager
+               progress:(nullable YYWebImageProgressBlock)progress
+              transform:(nullable YYWebImageTransformBlock)transform
+             completion:(nullable YYWebImageCompletionBlock)completion {
     if ([imageURL isKindOfClass:[NSString class]]) imageURL = [NSURL URLWithString:(id)imageURL];
     manager = manager ? manager : [YYWebImageManager sharedManager];
     
@@ -180,7 +209,7 @@ static int _YYWebImageHighlightedSetterKey;
                 });
             };
             
-            newSentinel = [setter setOperationWithSentinel:sentinel url:imageURL options:options manager:manager progress:_progress transform:transform completion:_completion];
+            newSentinel = [setter setOperationWithSentinel:sentinel url:imageURL options:options maxPixelSize:maxPixelSize manager:manager progress:_progress transform:transform completion:_completion];
             weakSetter = setter;
         });
     });

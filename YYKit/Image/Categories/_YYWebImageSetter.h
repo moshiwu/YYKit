@@ -40,6 +40,15 @@ extern const NSTimeInterval _YYWebImageProgressiveFadeTime;
                           transform:(nullable YYWebImageTransformBlock)transform
                          completion:(nullable YYWebImageCompletionBlock)completion;
 
+- (int32_t)setOperationWithSentinel:(int32_t)sentinel
+                                url:(nullable NSURL *)imageURL
+                            options:(YYWebImageOptions)options
+                       maxPixelSize:(int32_t)maxPixelSize
+                            manager:(YYWebImageManager *)manager
+                           progress:(nullable YYWebImageProgressBlock)progress
+                          transform:(nullable YYWebImageTransformBlock)transform
+                         completion:(nullable YYWebImageCompletionBlock)completion;
+
 /// Cancel and return a sentinel value. The imageURL will be set to nil.
 - (int32_t)cancel;
 

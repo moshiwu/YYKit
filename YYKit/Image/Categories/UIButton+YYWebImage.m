@@ -80,6 +80,7 @@ static int _YYWebImageBackgroundSetterKey;
           forSingleState:(NSNumber *)state
              placeholder:(UIImage *)placeholder
                  options:(YYWebImageOptions)options
+            maxPixelSize:(int32_t)maxPixelSize
                  manager:(YYWebImageManager *)manager
                 progress:(YYWebImageProgressBlock)progress
                transform:(YYWebImageTransformBlock)transform
@@ -152,7 +153,7 @@ static int _YYWebImageBackgroundSetterKey;
                 });
             };
             
-            newSentinel = [setter setOperationWithSentinel:sentinel url:imageURL options:options manager:manager progress:_progress transform:transform completion:_completion];
+            newSentinel = [setter setOperationWithSentinel:sentinel url:imageURL options:options maxPixelSize:maxPixelSize manager:manager progress:_progress transform:transform completion:_completion];
             weakSetter = setter;
         });
     });
@@ -207,6 +208,24 @@ static int _YYWebImageBackgroundSetterKey;
                completion:completion];
 }
 
+- (void)setImageWithURL:(nullable NSURL *)imageURL
+               forState:(UIControlState)state
+            placeholder:(nullable UIImage *)placeholder
+                options:(YYWebImageOptions)options
+           maxPixelSize:(int32_t)maxPixelSize
+             completion:(nullable YYWebImageCompletionBlock)completion
+{
+    [self setImageWithURL:imageURL
+                 forState:state
+              placeholder:placeholder
+                  options:options
+             maxPixelSize:maxPixelSize
+                  manager:nil
+                 progress:nil
+                transform:nil
+               completion:completion];
+}
+
 - (void)setImageWithURL:(NSURL *)imageURL
                forState:(UIControlState)state
             placeholder:(UIImage *)placeholder
@@ -232,11 +251,32 @@ static int _YYWebImageBackgroundSetterKey;
                progress:(YYWebImageProgressBlock)progress
               transform:(YYWebImageTransformBlock)transform
              completion:(YYWebImageCompletionBlock)completion {
+    [self setImageWithURL:imageURL
+                 forState:state
+              placeholder:placeholder
+                  options:options
+             maxPixelSize:0
+                  manager:nil
+                 progress:nil
+                transform:nil
+               completion:completion];
+}
+
+- (void)setImageWithURL:(nullable NSURL *)imageURL
+               forState:(UIControlState)state
+            placeholder:(nullable UIImage *)placeholder
+                options:(YYWebImageOptions)options
+           maxPixelSize:(int32_t)maxPixelSize
+                manager:(nullable YYWebImageManager *)manager
+               progress:(nullable YYWebImageProgressBlock)progress
+              transform:(nullable YYWebImageTransformBlock)transform
+             completion:(nullable YYWebImageCompletionBlock)completion {
     for (NSNumber *num in UIControlStateMulti(state)) {
         [self _setImageWithURL:imageURL
                 forSingleState:num
                    placeholder:placeholder
                        options:options
+                  maxPixelSize:maxPixelSize
                        manager:manager
                       progress:progress
                      transform:transform
@@ -257,6 +297,7 @@ static int _YYWebImageBackgroundSetterKey;
                     forSingleState:(NSNumber *)state
                        placeholder:(UIImage *)placeholder
                            options:(YYWebImageOptions)options
+                      maxPixelSize:(int32_t)maxPixelSize
                            manager:(YYWebImageManager *)manager
                           progress:(YYWebImageProgressBlock)progress
                          transform:(YYWebImageTransformBlock)transform
@@ -329,7 +370,7 @@ static int _YYWebImageBackgroundSetterKey;
                 });
             };
             
-            newSentinel = [setter setOperationWithSentinel:sentinel url:imageURL options:options manager:manager progress:_progress transform:transform completion:_completion];
+            newSentinel = [setter setOperationWithSentinel:sentinel url:imageURL options:options maxPixelSize:maxPixelSize manager:manager progress:_progress transform:transform completion:_completion];
             weakSetter = setter;
         });
     });
@@ -347,7 +388,9 @@ static int _YYWebImageBackgroundSetterKey;
     return setter.imageURL;
 }
 
-- (void)setBackgroundImageWithURL:(NSURL *)imageURL forState:(UIControlState)state placeholder:(UIImage *)placeholder {
+- (void)setBackgroundImageWithURL:(NSURL *)imageURL
+                         forState:(UIControlState)state
+                      placeholder:(UIImage *)placeholder {
     [self setBackgroundImageWithURL:imageURL
                            forState:state
                         placeholder:placeholder
@@ -358,7 +401,9 @@ static int _YYWebImageBackgroundSetterKey;
                          completion:nil];
 }
 
-- (void)setBackgroundImageWithURL:(NSURL *)imageURL forState:(UIControlState)state options:(YYWebImageOptions)options {
+- (void)setBackgroundImageWithURL:(NSURL *)imageURL
+                         forState:(UIControlState)state
+                          options:(YYWebImageOptions)options {
     [self setBackgroundImageWithURL:imageURL
                            forState:state
                         placeholder:nil
@@ -370,10 +415,10 @@ static int _YYWebImageBackgroundSetterKey;
 }
 
 - (void)setBackgroundImageWithURL:(NSURL *)imageURL
-               forState:(UIControlState)state
-            placeholder:(UIImage *)placeholder
-                options:(YYWebImageOptions)options
-             completion:(YYWebImageCompletionBlock)completion {
+                         forState:(UIControlState)state
+                      placeholder:(UIImage *)placeholder
+                          options:(YYWebImageOptions)options
+                       completion:(YYWebImageCompletionBlock)completion {
     [self setBackgroundImageWithURL:imageURL
                            forState:state
                         placeholder:placeholder
@@ -384,13 +429,30 @@ static int _YYWebImageBackgroundSetterKey;
                          completion:completion];
 }
 
+- (void)setBackgroundImageWithURL:(nullable NSURL *)imageURL
+                         forState:(UIControlState)state
+                      placeholder:(nullable UIImage *)placeholder
+                          options:(YYWebImageOptions)options
+                     maxPixelSize:(int32_t)maxPixelSize
+                       completion:(nullable YYWebImageCompletionBlock)completion {
+    [self setBackgroundImageWithURL:imageURL
+                           forState:state
+                        placeholder:placeholder
+                            options:options
+                       maxPixelSize:maxPixelSize
+                            manager:nil
+                           progress:nil
+                          transform:nil
+                         completion:completion];
+}
+
 - (void)setBackgroundImageWithURL:(NSURL *)imageURL
-               forState:(UIControlState)state
-            placeholder:(UIImage *)placeholder
-                options:(YYWebImageOptions)options
-               progress:(YYWebImageProgressBlock)progress
-              transform:(YYWebImageTransformBlock)transform
-             completion:(YYWebImageCompletionBlock)completion {
+                         forState:(UIControlState)state
+                      placeholder:(UIImage *)placeholder
+                          options:(YYWebImageOptions)options
+                         progress:(YYWebImageProgressBlock)progress
+                        transform:(YYWebImageTransformBlock)transform
+                       completion:(YYWebImageCompletionBlock)completion {
     [self setBackgroundImageWithURL:imageURL
                            forState:state
                         placeholder:placeholder
@@ -402,18 +464,39 @@ static int _YYWebImageBackgroundSetterKey;
 }
 
 - (void)setBackgroundImageWithURL:(NSURL *)imageURL
-               forState:(UIControlState)state
-            placeholder:(UIImage *)placeholder
-                options:(YYWebImageOptions)options
-                manager:(YYWebImageManager *)manager
-               progress:(YYWebImageProgressBlock)progress
-              transform:(YYWebImageTransformBlock)transform
-             completion:(YYWebImageCompletionBlock)completion {
+                         forState:(UIControlState)state
+                      placeholder:(UIImage *)placeholder
+                          options:(YYWebImageOptions)options
+                          manager:(YYWebImageManager *)manager
+                         progress:(YYWebImageProgressBlock)progress
+                        transform:(YYWebImageTransformBlock)transform
+                       completion:(YYWebImageCompletionBlock)completion {
+    [self setBackgroundImageWithURL:imageURL
+                           forState:state
+                        placeholder:placeholder
+                            options:options
+                       maxPixelSize:0
+                            manager:nil
+                           progress:progress
+                          transform:transform
+                         completion:completion];
+}
+
+- (void)setBackgroundImageWithURL:(NSURL *)imageURL
+                         forState:(UIControlState)state
+                      placeholder:(UIImage *)placeholder
+                          options:(YYWebImageOptions)options
+                     maxPixelSize:(int32_t)maxPixelSize
+                          manager:(YYWebImageManager *)manager
+                         progress:(YYWebImageProgressBlock)progress
+                        transform:(YYWebImageTransformBlock)transform
+                       completion:(YYWebImageCompletionBlock)completion {
     for (NSNumber *num in UIControlStateMulti(state)) {
         [self _setBackgroundImageWithURL:imageURL
                           forSingleState:num
                              placeholder:placeholder
                                  options:options
+                            maxPixelSize:maxPixelSize
                                  manager:manager
                                 progress:progress
                                transform:transform

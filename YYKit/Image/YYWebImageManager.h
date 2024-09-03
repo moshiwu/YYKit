@@ -74,6 +74,10 @@ typedef NS_OPTIONS(NSUInteger, YYWebImageOptions) {
     /// This flag will add the URL to a blacklist (in memory) when the URL fail to be downloaded,
     /// so the library won't keep trying.
     YYWebImageOptionIgnoreFailedURL = 1 << 14,
+    
+    /// This flag will downsample the image to the max input size (width or height in pixel),
+     /// and keep the aspect ratio.
+     YYWebImageOptionShouldDownsample = 1 << 15,
 };
 
 /// Indicated where the image came from.
@@ -197,6 +201,24 @@ typedef void (^YYWebImageCompletionBlock)(UIImage * _Nullable image,
  */
 - (nullable YYWebImageOperation *)requestImageWithURL:(NSURL *)url
                                               options:(YYWebImageOptions)options
+                                             progress:(nullable YYWebImageProgressBlock)progress
+                                            transform:(nullable YYWebImageTransformBlock)transform
+                                           completion:(nullable YYWebImageCompletionBlock)completion;
+
+/**
+ Creates and returns a new image operation, the operation will start immediately.
+ 
+ @param url        The image url (remote or local file path).
+ @param options    The options to control image operation.
+ @param maxPixelSize    Once the options contains YYWebImageOptionShouldDownsample, will downsample the image to max pixel size (width or height) if needed (pass 0 to avoid).
+ @param progress   Progress block which will be invoked on background thread (pass nil to avoid).
+ @param transform  Transform block which will be invoked on background thread  (pass nil to avoid).
+ @param completion Completion block which will be invoked on background thread  (pass nil to avoid).
+ @return A new image operation.
+ */
+- (nullable YYWebImageOperation *)requestImageWithURL:(NSURL *)url
+                                              options:(YYWebImageOptions)options
+                                         maxPixelSize:(int32_t)maxPixelSize
                                              progress:(nullable YYWebImageProgressBlock)progress
                                             transform:(nullable YYWebImageTransformBlock)transform
                                            completion:(nullable YYWebImageCompletionBlock)completion;

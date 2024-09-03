@@ -13,6 +13,8 @@
 #import "NSString+YYAdd.h"
 #import "NSBundle+YYAdd.h"
 
+static CGFloat _downsampleFactor = 1.2;
+
 @implementation YYImage {
     YYImageDecoder *_decoder;
     NSArray *_preloadedFrames;
@@ -49,6 +51,122 @@
     return [[self alloc] initWithData:data scale:scale];
 }
 
++ (CGFloat)downsampleFactor {
+    return _downsampleFactor;
+}
+
++ (void)setDownsampleFactor:(CGFloat)downsampleFactor {
+    _downsampleFactor = downsampleFactor;
+}
+
++ (CGSize)imagePixelSizeFromData:(NSData *)data {
+    CGSize size = CGSizeZero;
+    if (data && data.length > 0) {
+        CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)data, NULL);
+        if (source) {
+            CFDictionaryRef properties = CGImageSourceCopyPropertiesAtIndex(source, 0, NULL);
+            if (properties) {
+                NSInteger width = 0, height = 0;
+                CFTypeRef value = NULL;
+                value = CFDictionaryGetValue(properties, kCGImagePropertyPixelWidth);
+                if (value) CFNumberGetValue(value, kCFNumberNSIntegerType, &width);
+                value = CFDictionaryGetValue(properties, kCGImagePropertyPixelHeight);
+                if (value) CFNumberGetValue(value, kCFNumberNSIntegerType, &height);
+                size = CGSizeMake(width, height);
+                CFRelease(properties);
+            }
+            CFRelease(source);
+        }
+    }
+    
+    if (size.width <= 0 || size.height <= 0) {
+        size = CGSizeZero;
+    }
+    
+    return size;
+}
+
++ (NSData *)downsampleImageWithData:(NSData*)data maxPixelSize:(int32_t)maxPixelSize {
+    if (maxPixelSize < 1) {
+        return data;
+    }
+
+    CFDataRef dataRef = (__bridge CFDataRef)data;
+    
+    YYImageType imageType = YYImageDetectType(dataRef);
+    if (imageType != YYImageTypeJPEG && imageType != YYImageTypePNG) {
+        return data;
+    }
+    
+    CFStringRef optionKeys[1];
+    CFTypeRef optionValues[4];
+    optionKeys[0] = kCGImageSourceShouldCache;
+    optionValues[0] = (CFTypeRef)kCFBooleanFalse;
+    CFDictionaryRef sourceOption = CFDictionaryCreate(kCFAllocatorDefault, (const void **)optionKeys, (const void **)optionValues, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    CGImageSourceRef imageSource = CGImageSourceCreateWithData(dataRef, sourceOption);
+    CFRelease(sourceOption);
+    if (!imageSource) {
+        return data;
+    }
+    CFStringRef keys[5];
+    CFTypeRef values[5];
+
+    keys[0] = kCGImageSourceThumbnailMaxPixelSize;
+    CFNumberRef thumbnailSize = CFNumberCreate(NULL, kCFNumberIntType, &maxPixelSize);
+    values[0] = (CFTypeRef)thumbnailSize;
+    keys[1] = kCGImageSourceCreateThumbnailFromImageAlways;
+    values[1] = (CFTypeRef)kCFBooleanTrue;
+    keys[2] = kCGImageSourceCreateThumbnailWithTransform;
+    values[2] = (CFTypeRef)kCFBooleanTrue;
+    keys[3] = kCGImageSourceCreateThumbnailFromImageIfAbsent;
+    values[3] = (CFTypeRef)kCFBooleanTrue;
+    keys[4] = kCGImageSourceShouldCacheImmediately;
+    values[4] = (CFTypeRef)kCFBooleanTrue;
+    
+    CFDictionaryRef options = CFDictionaryCreate(kCFAllocatorDefault, (const void **)keys, (const void **)values, 4, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    CGImageRef thumbnailImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options);
+    
+    CFMutableDataRef thumbnailData = CFDataCreateMutable(CFAllocatorGetDefault(), 0);
+    if (thumbnailData) {
+        CFStringRef imageTypeString = YYImageTypeToUTType(imageType);
+        CGImageDestinationRef dest = CGImageDestinationCreateWithData(thumbnailData, imageTypeString, 1, NULL);
+        if (dest) {
+            CGFloat quality = 1;
+            if (imageType == YYImageTypeJPEG) {
+                quality = 0.9;
+            }
+            NSDictionary *qualityOptions = @{(id)kCGImageDestinationLossyCompressionQuality : @(quality) };
+            CGImageDestinationAddImage(dest, thumbnailImage, (CFDictionaryRef)qualityOptions);
+
+            if (!CGImageDestinationFinalize(dest)) {
+                CFRelease(thumbnailData);
+                thumbnailData = NULL;
+            }
+
+            CFRelease(dest);
+        }
+    }
+    CFRelease(thumbnailSize);
+    CFRelease(options);
+    CFRelease(imageSource);
+    CFRelease(thumbnailImage);
+    
+    if (CFDataGetLength(thumbnailData) == 0) {
+        CFRelease(thumbnailData);
+        thumbnailData = NULL;
+    }
+    
+    if (thumbnailData) {
+        NSData *compressData = (__bridge NSData *)thumbnailData;
+        CFRelease(thumbnailData);
+        if (compressData) {
+            return compressData;
+        }
+    }
+    
+    return data;
+}
+
 + (YYImage *)imageWithContentsOfFile:(NSString *)path {
     return [[self alloc] initWithContentsOfFile:path];
 }
@@ -71,12 +189,16 @@
 }
 
 - (instancetype)initWithData:(NSData *)data scale:(CGFloat)scale {
+    return [self initWithData:data scale:scale decodeForDisplay:YES];
+}
+
+- (instancetype)initWithData:(NSData *)data scale:(CGFloat)scale decodeForDisplay:(BOOL)decodeForDisplay {
     if (data.length == 0) return nil;
     if (scale <= 0) scale = [UIScreen mainScreen].scale;
     _preloadedLock = dispatch_semaphore_create(1);
     @autoreleasepool {
         YYImageDecoder *decoder = [YYImageDecoder decoderWithData:data scale:scale];
-        YYImageFrame *frame = [decoder frameAtIndex:0 decodeForDisplay:YES];
+        YYImageFrame *frame = [decoder frameAtIndex:0 decodeForDisplay:decodeForDisplay];
         UIImage *image = frame.image;
         if (!image) return nil;
         self = [self initWithCGImage:image.CGImage scale:decoder.scale orientation:image.imageOrientation];
@@ -90,6 +212,18 @@
         self.isDecodedForDisplay = YES;
     }
     return self;
+}
+
+- (instancetype)initWithData:(NSData *)data scale:(CGFloat)scale decodeForDisplay:(BOOL)decodeForDisplay maxPixelSize:(int32_t)maxPixelSize {
+    maxPixelSize = maxPixelSize * [YYImage downsampleFactor];
+    if (maxPixelSize > 0) {
+        CGSize pixelSize = [YYImage imagePixelSizeFromData:data];
+        int32_t maxSize = MAX(pixelSize.width, pixelSize.height);
+        if (maxSize > maxPixelSize) {
+            data = [YYImage downsampleImageWithData:data maxPixelSize:maxPixelSize];
+        }
+    }
+    return [self initWithData:data scale:scale decodeForDisplay:decodeForDisplay];
 }
 
 - (NSData *)animatedImageData {
