@@ -120,17 +120,34 @@ static void YYReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRea
     static NSDictionary *dic;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        dic = @{CTRadioAccessTechnologyGPRS : @(YYReachabilityWWANStatus2G),  // 2.5G   171Kbps
-                CTRadioAccessTechnologyEdge : @(YYReachabilityWWANStatus2G),  // 2.75G  384Kbps
-                CTRadioAccessTechnologyWCDMA : @(YYReachabilityWWANStatus3G), // 3G     3.6Mbps/384Kbps
-                CTRadioAccessTechnologyHSDPA : @(YYReachabilityWWANStatus3G), // 3.5G   14.4Mbps/384Kbps
-                CTRadioAccessTechnologyHSUPA : @(YYReachabilityWWANStatus3G), // 3.75G  14.4Mbps/5.76Mbps
-                CTRadioAccessTechnologyCDMA1x : @(YYReachabilityWWANStatus3G), // 2.5G
-                CTRadioAccessTechnologyCDMAEVDORev0 : @(YYReachabilityWWANStatus3G),
-                CTRadioAccessTechnologyCDMAEVDORevA : @(YYReachabilityWWANStatus3G),
-                CTRadioAccessTechnologyCDMAEVDORevB : @(YYReachabilityWWANStatus3G),
-                CTRadioAccessTechnologyeHRPD : @(YYReachabilityWWANStatus3G),
-                CTRadioAccessTechnologyLTE : @(YYReachabilityWWANStatus4G)}; // LTE:3.9G 150M/75M  LTE-Advanced:4G 300M/150M
+        if (@available(iOS 14.1, *)) {
+            dic = @{CTRadioAccessTechnologyGPRS : @(YYReachabilityWWANStatus2G),  // 2.5G   171Kbps
+                    CTRadioAccessTechnologyEdge : @(YYReachabilityWWANStatus2G),  // 2.75G  384Kbps
+                    CTRadioAccessTechnologyWCDMA : @(YYReachabilityWWANStatus3G), // 3G     3.6Mbps/384Kbps
+                    CTRadioAccessTechnologyHSDPA : @(YYReachabilityWWANStatus3G), // 3.5G   14.4Mbps/384Kbps
+                    CTRadioAccessTechnologyHSUPA : @(YYReachabilityWWANStatus3G), // 3.75G  14.4Mbps/5.76Mbps
+                    CTRadioAccessTechnologyCDMA1x : @(YYReachabilityWWANStatus3G), // 2.5G
+                    CTRadioAccessTechnologyCDMAEVDORev0 : @(YYReachabilityWWANStatus3G),
+                    CTRadioAccessTechnologyCDMAEVDORevA : @(YYReachabilityWWANStatus3G),
+                    CTRadioAccessTechnologyCDMAEVDORevB : @(YYReachabilityWWANStatus3G),
+                    CTRadioAccessTechnologyeHRPD : @(YYReachabilityWWANStatus3G),
+                    CTRadioAccessTechnologyLTE : @(YYReachabilityWWANStatus4G), // LTE:3.9G 150M/75M  LTE-Advanced:4G 300M/150M
+                    CTRadioAccessTechnologyNRNSA: @(YYReachabilityWWANStatus5G),
+                    CTRadioAccessTechnologyNR: @(YYReachabilityWWANStatus5G)};
+                    
+        } else {
+            dic = @{CTRadioAccessTechnologyGPRS : @(YYReachabilityWWANStatus2G),  // 2.5G   171Kbps
+                    CTRadioAccessTechnologyEdge : @(YYReachabilityWWANStatus2G),  // 2.75G  384Kbps
+                    CTRadioAccessTechnologyWCDMA : @(YYReachabilityWWANStatus3G), // 3G     3.6Mbps/384Kbps
+                    CTRadioAccessTechnologyHSDPA : @(YYReachabilityWWANStatus3G), // 3.5G   14.4Mbps/384Kbps
+                    CTRadioAccessTechnologyHSUPA : @(YYReachabilityWWANStatus3G), // 3.75G  14.4Mbps/5.76Mbps
+                    CTRadioAccessTechnologyCDMA1x : @(YYReachabilityWWANStatus3G), // 2.5G
+                    CTRadioAccessTechnologyCDMAEVDORev0 : @(YYReachabilityWWANStatus3G),
+                    CTRadioAccessTechnologyCDMAEVDORevA : @(YYReachabilityWWANStatus3G),
+                    CTRadioAccessTechnologyCDMAEVDORevB : @(YYReachabilityWWANStatus3G),
+                    CTRadioAccessTechnologyeHRPD : @(YYReachabilityWWANStatus3G),
+                    CTRadioAccessTechnologyLTE : @(YYReachabilityWWANStatus4G)}; // LTE:3.9G 150M/75M  LTE-Advanced:4G 300M/150M
+        }
     });
     NSNumber *num = dic[status];
     if (num != nil) return num.unsignedIntegerValue;
