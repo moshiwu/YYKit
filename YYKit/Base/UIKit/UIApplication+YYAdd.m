@@ -236,4 +236,33 @@ YYSYNTH_DYNAMIC_PROPERTY_OBJECT(networkActivityInfo, setNetworkActivityInfo, RET
 #pragma clang diagnostic pop
 }
 
+- (nullable UIWindow *)keyWindowCompatible {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 150000
+  if (@available(iOS 15, *)) {
+    for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
+      if ([scene isKindOfClass:[UIWindowScene class]] &&
+          scene.activationState == UISceneActivationStateForegroundActive) {
+        return ((UIWindowScene *)scene).keyWindow;
+      }
+    }
+  } else
+#endif  // __IPHONE_OS_VERSION_MAX_ALLOWED >= 150000
+  {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_15_0
+    if (@available(iOS 13, *)) {
+      for (UIWindow *window in UIApplication.sharedApplication.windows) {
+        if (window.isKeyWindow) {
+          return window;
+        }
+      }
+    } else {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_13_0
+      return UIApplication.sharedApplication.keyWindow;
+#endif  // __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_13_0
+    }
+#endif  // __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_15_0
+  }
+  return nil;
+}
+
 @end

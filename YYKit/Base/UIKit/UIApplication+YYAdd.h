@@ -84,6 +84,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// Same as sharedApplication, but returns nil in App Extension.
 + (nullable UIApplication *)sharedExtensionApplication;
 
+/// 获取keyWindow，避免iOS13+警告的方法
+- (nullable UIWindow *)keyWindowCompatible;
+
 @end
 
 NS_ASSUME_NONNULL_END
