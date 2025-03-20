@@ -22,8 +22,7 @@
 #import "YYImage.h"
 #import "YYKitMacro.h"
 
-@import libwebp;
-#define YYIMAGE_WEBP_ENABLED 1
+#define YYIMAGE_WEBP_ENABLED 0
 
 //#ifndef YYIMAGE_WEBP_ENABLED
 //#if __has_include(<libwebp/decode.h>) && __has_include(<libwebp/encode.h>) && \
