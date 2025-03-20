@@ -169,6 +169,13 @@ typedef NS_ENUM(NSUInteger, YYTextMoveDirection) {
 @synthesize returnKeyType = _returnKeyType;
 @synthesize enablesReturnKeyAutomatically = _enablesReturnKeyAutomatically;
 @synthesize secureTextEntry = _secureTextEntry;
+@synthesize smartQuotesType = _smartQuotesType;
+@synthesize smartDashesType = _smartDashesType;
+@synthesize smartInsertDeleteType = _smartInsertDeleteType;
+@synthesize inlinePredictionType = _inlinePredictionType;
+@synthesize mathExpressionCompletionType = _mathExpressionCompletionType;
+@synthesize writingToolsBehavior = _writingToolsBehavior;
+@synthesize allowedWritingToolsResultOptions = _allowedWritingToolsResultOptions;
 
 #pragma mark - @protocol UITextInput
 @synthesize selectedTextRange = _selectedTextRange;  //copy nonnull (YYTextRange*)
@@ -1935,6 +1942,13 @@ typedef NS_ENUM(NSUInteger, YYTextMoveDirection) {
     _returnKeyType = UIReturnKeyDefault;
     _enablesReturnKeyAutomatically = NO;
     _secureTextEntry = NO;
+    _smartQuotesType = UITextSmartQuotesTypeDefault;
+    _smartDashesType = UITextSmartDashesTypeDefault;
+    _smartInsertDeleteType = UITextSmartInsertDeleteTypeDefault;
+    _inlinePredictionType = UITextInlinePredictionTypeDefault;
+    _mathExpressionCompletionType = UITextMathExpressionCompletionTypeDefault;
+    _writingToolsBehavior = UIWritingToolsBehaviorDefault;
+    _allowedWritingToolsResultOptions = UIWritingToolsResultDefault;
     
     // UITextInput
     _selectedTextRange = [YYTextRange defaultRange];
