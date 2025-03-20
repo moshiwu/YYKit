@@ -371,7 +371,7 @@ else if (size <= 4 * _size_ ) { \
     return [NSString stringWithUTF8String:class_getName([self class])];
 }
 
-- (id)deepCopy {
+- (id)yy_deepCopy {
     id obj = nil;
     @try {
         obj = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:self]];
@@ -382,7 +382,7 @@ else if (size <= 4 * _size_ ) { \
     return obj;
 }
 
-- (id)deepCopyWithArchiver:(Class)archiver unarchiver:(Class)unarchiver {
+- (id)yy_deepCopyWithArchiver:(Class)archiver unarchiver:(Class)unarchiver {
     id obj = nil;
     @try {
         obj = [unarchiver unarchiveObjectWithData:[archiver archivedDataWithRootObject:self]];

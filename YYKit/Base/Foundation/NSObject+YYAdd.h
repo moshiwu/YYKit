@@ -286,7 +286,7 @@ NS_ASSUME_NONNULL_BEGIN
  Returns a copy of the instance with `NSKeyedArchiver` and ``NSKeyedUnarchiver``.
  Returns nil if an error occurs.
  */
-- (nullable id)deepCopy;
+- (nullable id)yy_deepCopy;
 
 /**
  Returns a copy of the instance use archiver and unarchiver.
@@ -295,7 +295,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param archiver   NSKeyedArchiver class or any class inherited.
  @param unarchiver NSKeyedUnarchiver clsas or any class inherited.
  */
-- (nullable id)deepCopyWithArchiver:(Class)archiver unarchiver:(Class)unarchiver;
+- (nullable id)yy_deepCopyWithArchiver:(Class)archiver unarchiver:(Class)unarchiver;
 
 @end
 
