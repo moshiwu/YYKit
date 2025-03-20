@@ -1487,9 +1487,9 @@ typedef NS_ENUM(NSUInteger, YYTextMoveDirection) {
     [self _setFont:font];
     [self _setTextColor:color];
     [self _setTextAlignment:style.alignment];
+    [self _setAttributedText:_innerText];
     [self _setSelectedRange:_selectedTextRange.asRange];
     [self _setTypingAttributes:_typingAttributesHolder.attributes];
-    [self _setAttributedText:_innerText];
 }
 
 /// Parse text with `textParser` and update the _selectedTextRange.
