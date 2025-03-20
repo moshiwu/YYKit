@@ -345,6 +345,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic) CGFloat extraAccessoryViewHeight;
 
+#pragma mark - 扩展字段
+
+/// 插入文本时，是否禁用滚动动画，默认为NO
+@property (nonatomic, assign) BOOL disableScrollAnimation;
+
 @end
 
 
