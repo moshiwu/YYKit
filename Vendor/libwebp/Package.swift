@@ -4,13 +4,13 @@ import PackageDescription
 let package = Package(
     name: "libwebp",
     platforms: [
-        .iOS(.v15)
+        .iOS(.v15),
     ],
     products: [
         .library(
             name: "libwebp",
             targets: ["libwebp"]
-        )
+        ),
     ],
     dependencies: [],
     targets: [
@@ -24,13 +24,13 @@ let package = Package(
                 "src/dec/Makefile.am",
                 "src/dsp/Makefile.am",
                 "src/enc/Makefile.am",
-                "src/utils/Makefile.am"
+                "src/utils/Makefile.am",
             ],
             sources: [
                 "src/dec",
                 "src/dsp",
                 "src/enc",
-                "src/utils"
+                "src/utils",
             ],
             publicHeadersPath: "src/webp",
             cSettings: [
@@ -43,12 +43,12 @@ let package = Package(
                 .define("HAVE_CONFIG_H"),
                 .define("WEBP_USE_THREAD"),
                 .define("HAVE_PTHREAD"),
-                .define("WEBP_USE_NEON")
+                .define("WEBP_USE_NEON"),
             ],
             linkerSettings: [
                 .linkedFramework("CoreGraphics"),
-                .linkedFramework("ImageIO")
+                .linkedFramework("ImageIO"),
             ]
-        )
+        ),
     ]
-) 
+)

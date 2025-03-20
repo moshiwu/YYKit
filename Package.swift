@@ -13,17 +13,19 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(name: "libwebp", path: "Vendor/libwebp")
-        
+        .package(name: "libwebp", path: "Vendor/libwebp"),
     ],
     targets: [
         .target(
             name: "YYKit",
-            dependencies: [],
+            dependencies: [
+                "libwebp",
+            ],
             path: "YYKit",
             exclude: [
                 "Base/Foundation/NSObject+YYAddForARC.m",
                 "Base/Foundation/NSThread+YYAdd.m",
+                "../Demo",
             ],
             publicHeadersPath: "include",
             cSettings: [

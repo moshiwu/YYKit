@@ -22,25 +22,28 @@
 #import "YYImage.h"
 #import "YYKitMacro.h"
 
-#ifndef YYIMAGE_WEBP_ENABLED
-#if __has_include(<libwebp/decode.h>) && __has_include(<libwebp/encode.h>) && \
-__has_include(<libwebp/demux.h>)  && __has_include(<libwebp/mux.h>)
+@import libwebp;
 #define YYIMAGE_WEBP_ENABLED 1
-#import <libwebp/decode.h>
-#import <libwebp/encode.h>
-#import <libwebp/demux.h>
-#import <libwebp/mux.h>
-#elif __has_include("libwebp/decode.h") && __has_include("libwebp/encode.h") && \
-__has_include("libwebp/demux.h")  && __has_include("libwebp/mux.h")
-#define YYIMAGE_WEBP_ENABLED 1
-#import "libwebp/decode.h"
-#import "libwebp/encode.h"
-#import "libwebp/demux.h"
-#import "libwebp/mux.h"
-#else
-#define YYIMAGE_WEBP_ENABLED 0
-#endif
-#endif
+
+//#ifndef YYIMAGE_WEBP_ENABLED
+//#if __has_include(<libwebp/decode.h>) && __has_include(<libwebp/encode.h>) && \
+//__has_include(<libwebp/demux.h>)  && __has_include(<libwebp/mux.h>)
+//#define YYIMAGE_WEBP_ENABLED 1
+//#import <libwebp/decode.h>
+//#import <libwebp/encode.h>
+//#import <libwebp/demux.h>
+//#import <libwebp/mux.h>
+//#elif __has_include("libwebp/decode.h") && __has_include("libwebp/encode.h") && \
+//__has_include("libwebp/demux.h")  && __has_include("libwebp/mux.h")
+//#define YYIMAGE_WEBP_ENABLED 1
+//#import "libwebp/decode.h"
+//#import "libwebp/encode.h"
+//#import "libwebp/demux.h"
+//#import "libwebp/mux.h"
+//#else
+//#define YYIMAGE_WEBP_ENABLED 0
+//#endif
+//#endif
 
 
 
